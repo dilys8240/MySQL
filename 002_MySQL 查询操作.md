@@ -1,6 +1,6 @@
-# MySQL 查询操作
+﻿# MySQL 查询操作
 
-## select检索语句
+## 一、select检索语句
 
 1. 检索单个列或多个列
 
@@ -46,7 +46,7 @@ limit 4，3;          --从第4行开始，检索3行的数据，返回的是第
 
 ```
 
-## 排序检索数据
+## 二、排序检索数据
 
 1. 按单个或多个列排序
 
@@ -79,7 +79,7 @@ order by 子句 必须是select语句中的 最后一条字句。
 ```
 
 
-## where子句过滤数据
+## 三、where子句过滤数据
 
 1. 检查单个值（=、>、<、>=、<=）
 
@@ -117,7 +117,7 @@ where cust_email is null;
 
 ```
 
-## 高级数据过滤
+## 四、高级数据过滤
 
 1. 组合where字句（and操作符、or操作符）
 
@@ -148,7 +148,7 @@ ORDER BY prod_name;
 
 ```
 
-## 用通配符进行过滤
+## 五、用通配符进行过滤（like 操作符）
 
 ### 通配符搜索只能用于文本子段（字符串），非文本数据类型子段不能使用通配符搜索
 
@@ -191,7 +191,7 @@ ORDER BY prod_name;
    ```
 
 
-## 使用子查询
+## 六、使用子查询
 
 ### 子查询常用于where子句的in操作符中，以及用来填充计算列。
 
@@ -228,5 +228,54 @@ ORDER BY prod_name;
 
 
 
-## 联结表
+## 七、联结表
+
+### 1. 联结
+   
+联结是一种机制，用来在一条select语句中关联表（使用完全限定列名：用一个句点分 隔表名和列名），可联结多个表，返回一组输出（where、and）。
+
+### 2. 关系表与关系数据库
+ 
+关系表的设计是把信息分解成多个表，一类数据一个表；
+各表通过某些共同的值互相关联。
+
+### 3. 子查询和使用联结可以实现相同的功能。
+
+```sql
+SELECT cust_name,cust_contact
+FROM Customers
+WHERE cust_id in (SELECT cust_id
+                 FROM Orders
+                 WHERE order_num in (SELECT order_num                        
+                 FROM OrderItems                                         
+                 WHERE prrod_id='RGAN02'));             
+```
+
+```sql
+SELECT cust_name,cust_contact
+FROM Customers,Orders,OrderItems
+WHERE Customers.cust_id=Orders.cust_id
+                AND OrderItems.order_num=Orders.order_num
+                AND  prrod_id='RGAN02';
+```
+
+## 八、组合查询
+### 1. 组合查询
+a. 利用union操作符将多条select语句组合成一个结果集（与where or 子句具有相同的功能）。
+b. union自动取消重复的行，union all包含重复的行
+
+### 2. 适用情况
+a.在一个查询中，从不同的表返回结构数据；
+b.对一个表执行多个查询，按一个查询返回数据。
+
+### 3. union规则
+a.多个select语句；
+b.union中每个查询必须包含相同的列、表达式或聚集函数；
+a.列数据类型必须兼容。
+
+### 4. union与where
+union几乎总是完成与多个where条件相同的工作。union all为union的一种形式，它完成where子句完成不了的工作。如果确实需要每个条件的匹配行全部出现（包括重复行），就必须使用union all。
+### 5. union规则对组合查询结果排序
+在用union组合查询时，只能使用一条order by 子句，它必须位于最后一条select语句之后。
+
 
